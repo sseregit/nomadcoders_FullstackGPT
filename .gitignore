@@ -4,3 +4,4 @@
 *.iml
 files/
 .cache/
+.streamlit/
