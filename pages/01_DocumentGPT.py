@@ -1,21 +1,53 @@
 import streamlit as st
+from langchain.callbacks.base import BaseCallbackHandler
 from langchain.chat_models import ChatOpenAI
 from langchain.document_loaders import UnstructuredFileLoader
 from langchain.embeddings import OpenAIEmbeddings, CacheBackedEmbeddings
+from langchain.prompts import ChatPromptTemplate
 from langchain.schema.runnable import RunnableLambda, RunnablePassthrough
 from langchain.storage import LocalFileStore
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.vectorstores.faiss import FAISS
-from langchain.prompts import ChatPromptTemplate
 
 st.set_page_config(
     page_title="DocumentGPT",
     page_icon="📃"
 )
 
+
+class ChatCallbackHandler(BaseCallbackHandler):
+
+    message = ""
+
+    def on_llm_start(
+            self,
+            *args,
+            **kwargs):
+        self.message_box = st.empty()
+
+    def on_llm_end(
+            self,
+            *args,
+            **kwargs):
+        with st.sidebar:
+            save_message(self.message, "ai")
+
+    def on_llm_new_token(
+            self,
+            token,
+            *args, **kwargs):
+        self.message += token
+        self.message_box.markdown(self.message)
+
+
 llm = ChatOpenAI(
     temperature=0.1,
+    streaming=True,
+    callbacks=[
+        ChatCallbackHandler(),
+    ]
 )
+
 
 @st.cache_data(show_spinner="Embedding file...")
 def embed_file(file):
@@ -50,20 +82,24 @@ def embed_file(file):
 
         return retriever
 
+def save_message(message, role):
+    st.session_state["messages"].append({"message": message, "role": role})
 
 def send_message(message, role, save=True):
     with st.chat_message(role):
         st.markdown(message)
     if save:
-        st.session_state["messages"].append({"message": message, "role": role})
+        save_message(message, role)
 
 
 def paint_history():
     for message in st.session_state["messages"]:
         send_message(message["message"], message["role"], False)
 
+
 def format_docs(docs):
     return "\n\n".join(document.page_content for document in docs)
+
 
 prompt = ChatPromptTemplate.from_messages([
     ("system",
@@ -101,11 +137,12 @@ if file:
     if message:
         send_message(message, "human")
         chain = {
-            "context": retriever | RunnableLambda(format_docs),
-            "question": RunnablePassthrough(),
-        } | prompt | llm
-        response = chain.invoke(message)
-        send_message(response, "ai")
+                    "context": retriever | RunnableLambda(format_docs),
+                    "question": RunnablePassthrough(),
+                } | prompt | llm
+
+        with st.chat_message("ai"):
+            response = chain.invoke(message)
 
 else:
     st.session_state["messages"] = []
