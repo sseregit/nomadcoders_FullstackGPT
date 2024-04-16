@@ -15,7 +15,9 @@ st.markdown(
     
     Here are the apps I made:
     
-    - [ ] [DocumentGPT](/DocumentGPT)
+    - [x] [DocumentGPT](/DocumentGPT)
+        - [ ] [challenge](/DocumentGPT)
+            1. chain에 memory 추가 하기
     - [ ] [PrivateGPT](/PrivateGPT)
     - [ ] [QuizGPT](/QuizGPT)
     - [ ] [SiteGPT](/SiteGPT)
