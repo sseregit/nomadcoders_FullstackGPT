@@ -18,7 +18,7 @@ st.markdown(
     - [x] [DocumentGPT](/DocumentGPT)
         - [ ] [challenge](/DocumentGPT)
             1. chain에 memory 추가 하기
-    - [ ] [PrivateGPT](/PrivateGPT)
+    - [x] [PrivateGPT](/PrivateGPT)
         - [ ] [challenge](/PrivateGPT)
             1. select box를 이용해 모델 변경을 허용한다.    
     - [ ] [QuizGPT](/QuizGPT)
