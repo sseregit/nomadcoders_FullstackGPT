@@ -5,3 +5,4 @@
 files/
 .cache/
 .streamlit/
+mistral.bin
