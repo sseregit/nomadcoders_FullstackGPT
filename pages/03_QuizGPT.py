@@ -8,10 +8,12 @@ from langchain.callbacks import StreamingStdOutCallbackHandler
 from langchain.schema import BaseOutputParser
 import json
 
+
 class JsonOutputParser(BaseOutputParser):
     def parse(self, text):
         text = text.replace("```", "").replace("json", "").replace(", ]", "]").replace(", }", "}")
         return json.loads(text)
+
 
 output_parser = JsonOutputParser()
 
@@ -207,6 +209,18 @@ def split_file(file):
         return docs
 
 
+@st.cache_data(show_spinner="Making quiz...")
+def run_quiz_chain(_docs, topic):
+    chain = {"context": questions_chain} | formatting_chain | output_parser
+    return chain.invoke(_docs)
+
+
+@st.cache_data(show_spinner="Searching Wikipeida...")
+def wiki_search(term):
+    retriever = WikipediaRetriever(top_k_results=5)
+    return retriever.get_relevant_documents(term)
+
+
 with st.sidebar:
     docs = None
     choice = st.selectbox(
@@ -218,11 +232,9 @@ with st.sidebar:
         if file:
             docs = split_file(file)
     else:
-        topic = st.text_input("Name of the article")
+        topic = st.text_input("Search Wikipedia...")
         if topic:
-            retriever = WikipediaRetriever(top_k_results=5)
-            with st.status("Searching Wikipedia..."):
-                docs = retriever.get_relevant_documents(topic)
+            docs = wiki_search(topic)
 
 if not docs:
     st.markdown(
@@ -236,10 +248,13 @@ if not docs:
         """
     )
 else:
-
-    start = st.button("Generate Quiz")
-
-    if start:
-        chain = {"context": questions_chain} | formatting_chain | output_parser
-        response = chain.invoke(docs)
-        st.write(response)
+    response = run_quiz_chain(docs, topic if topic else file.name)
+    with st.form("question_form"):
+        for question in response["questions"]:
+            st.write(question["question"])
+            value = st.radio("Select an option.", [answer["answer"] for answer in question["answers"]], index=None)
+            if {"answer": value, "correct": True} in question["answers"]:
+                st.success("Correct!")
+            elif value is not None:
+                st.error("Wrong")
+        button = st.form_submit_button("Submit")
