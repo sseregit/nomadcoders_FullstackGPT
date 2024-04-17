@@ -21,7 +21,9 @@ st.markdown(
     - [x] [PrivateGPT](/PrivateGPT)
         - [ ] [challenge](/PrivateGPT)
             1. select box를 이용해 모델 변경을 허용한다.    
-    - [ ] [QuizGPT](/QuizGPT)
+    - [x] [QuizGPT](/QuizGPT)
+        - [ ] [challenge](/QuizGPT)
+            1. function calling을 이용하는 방법으로 변경        
     - [ ] [SiteGPT](/SiteGPT)
     - [ ] [MeetingGPT](/MeetingGPT)
     - [ ] [InvestorGPT](/InvestorGPT)
