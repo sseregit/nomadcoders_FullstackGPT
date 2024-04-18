@@ -24,7 +24,11 @@ st.markdown(
     - [x] [QuizGPT](/QuizGPT)
         - [ ] [challenge](/QuizGPT)
             1. function calling을 이용하는 방법으로 변경        
-    - [ ] [SiteGPT](/SiteGPT)
+    - [x] [SiteGPT](/SiteGPT)
+        - [ ] [challenge](/SiteGPT)
+            1. Chatbot처럼 만들기
+            2. question들의 cache
+            3. 비슷한 question들의 cache            
     - [ ] [MeetingGPT](/MeetingGPT)
     - [ ] [InvestorGPT](/InvestorGPT)
     """

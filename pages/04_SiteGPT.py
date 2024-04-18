@@ -37,13 +37,6 @@ def get_answers(inputs):
     docs = inputs["docs"]
     question = inputs["question"]
     answers_chain = answers_prompt | llm
-    answers = []
-    # for doc in docs:
-    #     result = answers_chain.invoke({
-    #         "question": question,
-    #         "context": doc.page_content,
-    #     })
-    #     answers.append(result.content)
     return {
         "question": question,
         "answers": [
