@@ -29,7 +29,9 @@ st.markdown(
             1. Chatbot처럼 만들기
             2. question들의 cache
             3. 비슷한 question들의 cache            
-    - [ ] [MeetingGPT](/MeetingGPT)
+    - [x] [MeetingGPT](/MeetingGPT)
+        - [ ] [challenge](/MeetingGPT)
+            1. Q&A tab            
     - [ ] [InvestorGPT](/InvestorGPT)
     """
 )
