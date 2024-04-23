@@ -6,3 +6,4 @@ files/
 .cache/
 .streamlit/
 mistral.bin
+movies.sqlite
